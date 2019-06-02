@@ -1,5 +1,6 @@
 defmodule TabularTest do
   use ExUnit.Case, async: true
+
   doctest Tabular
 
   describe "lines" do
@@ -112,7 +113,7 @@ defmodule TabularTest do
     end
   end
 
-  describe "to_list_of_lists_no_hd" do
+  describe "to_list_of_lists_no_header" do
     test "returns values as a list of lists without the header" do
       data_as_table = """
             +-----------+--------------------+--------------+
@@ -131,7 +132,7 @@ defmodule TabularTest do
             +-----------+--------------------+--------------+
       """
 
-      actual = Tabular.to_list_of_lists_no_hd(data_as_table)
+      actual = Tabular.to_list_of_lists_no_header(data_as_table)
 
       expected = [
         ["Malcolm Reynolds", "September 20, 2468", false],
