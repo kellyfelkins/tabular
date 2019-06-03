@@ -67,7 +67,7 @@ Rows are returned as either lists of lists or lists of maps.
 
 ```elixir
   Tabular.to_list_of_lists_no_hd(table)
-    |> Enum.each(fn [col1, col2, col3] = row ->
+  |> Enum.each(fn [col1, col2, col3] = row ->
     # use row or column data here...
   end
 ```
