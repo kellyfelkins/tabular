@@ -22,8 +22,7 @@ of software tests.
 Installation
 ------------
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `tabular` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `tabular` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -67,16 +66,13 @@ Rows are returned as either lists of lists or lists of maps.
 **Reading a String**
 
 ```elixir
-      AsciiTableReader.to_list_of_lists_no_hd(table)
-      |> Enum.each(fn [col1, col2, col3] = row ->
-      # use row or column data here...
-      nil
-end
+  Tabular.to_list_of_lists_no_hd(table)
+    |> Enum.each(fn [col1, col2, col3] = row ->
+    # use row or column data here...
+  end
 ```
 
 More examples can be found in the Examples of Testing With ASCII Tables [repo](https://github.com/kellyfelkins/examples_of_testing_with_ascii_tables).
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/tabular](https://hexdocs.pm/tabular).
+The docs can be found at [https://hexdocs.pm/tabular](https://hexdocs.pm/tabular).
 
