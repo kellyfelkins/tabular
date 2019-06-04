@@ -76,3 +76,8 @@ More examples can be found in the Examples of Testing With ASCII Tables [repo](h
 
 The docs can be found at [https://hexdocs.pm/tabular](https://hexdocs.pm/tabular).
 
+## License
+
+Blue Oak Model license. Please see [LICENSE][license] for details.
+
+[LICENSE]: https://github.com/kellyfelkins/tabular/blob/master/LICENSE.md
