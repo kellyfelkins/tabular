@@ -177,7 +177,7 @@ defmodule Tabular do
   def special("true"), do: true
   def special("false"), do: false
   def special("nil"), do: nil
-  def special(""), do: nil
+  def special(""), do: ""
   def special(":" <> rest), do: String.to_atom(rest)
   def special(not_special), do: not_special
 end
