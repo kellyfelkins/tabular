@@ -104,7 +104,7 @@ defmodule TabularTest do
       expected = [
         ["name", "dob", "predictable?"],
         ["Malcolm Reynolds", "September 20, 2468", false],
-        ["Zoe Washburne", "February 15, 2484", nil],
+        ["Zoe Washburne", "February 15, 2484", ""],
         ["Jane", :unknown, true],
         ["Derrial Book", nil, true]
       ]

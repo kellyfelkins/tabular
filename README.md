@@ -49,7 +49,8 @@ Rows are returned as either lists of lists or lists of maps.
 | folded                |                              | strings are folded with a single  |
 |                       |                              | space replacing the new line      |
 |-----------------------+------------------------------+-----------------------------------|
-|                       | nil                          | nil is returned for blank values  |
+|                       | ""                           | an empty string is returned for   | 
+|                       |                              | blank cells                       |
 |-----------------------+------------------------------+-----------------------------------|
 | nil                   | nil                          | nil, true, and false are          |
 |                       |                              | special values                    |
