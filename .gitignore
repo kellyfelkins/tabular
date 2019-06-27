@@ -24,4 +24,5 @@ tabular-*.tar
 
 *.iml
 .idea
+.tool-versions
 
