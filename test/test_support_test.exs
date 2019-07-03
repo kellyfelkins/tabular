@@ -1,6 +1,8 @@
 defmodule Tabular.TestSupportTest do
   use ExUnit.Case, async: true
 
+  doctest Tabular
+
   describe "equal?" do
     test "when there is a false value in any cell, returns false" do
       results_table = [
@@ -10,6 +12,16 @@ defmodule Tabular.TestSupportTest do
       ]
 
       refute Tabular.TestSupport.equal?(results_table)
+    end
+
+    test "when all cells are true, returns true" do
+      results_table = [
+        [true, true, true],
+        [true, true, true],
+        [true, true, true]
+      ]
+
+      assert Tabular.TestSupport.equal?(results_table)
     end
   end
 
@@ -58,27 +70,21 @@ defmodule Tabular.TestSupportTest do
             +---------+-------+
             | name    | count |
             +---------+-------+
-            | Malcolm | 11    |
+            | Mike    | 11    |
             +---------+-------+
             | Zoe     | 20    |
             +---------+-------+
       """
 
       results_table = [
-        [true, true],
+        [false, true],
         [true, false]
       ]
 
-      comparators = %{"count" => &near/2}
+      comparators = %{"count" => &(abs(String.to_integer(&1) - String.to_integer(&2)) < 2)}
 
       assert Tabular.TestSupport.compare(table1, table2, comparators: comparators) ==
                results_table
     end
-  end
-
-  defp near(actual, expected) do
-    actual_integer = String.to_integer(actual)
-    expected_integer = String.to_integer(expected)
-    abs(actual_integer - expected_integer) < 2
   end
 end
