@@ -41,35 +41,6 @@ defmodule Tabular do
 
   @doc ~S'''
 
-  Converts an ascii table to a list of lists, omitting the header row.
-
-  ## Examples
-
-      iex> ascii_table = """
-      ...> |---------------+--------------------|
-      ...> | name          | dob                |
-      ...> |---------------+--------------------|
-      ...> | Malcolm       | September 20, 2468 |
-      ...> | Reynolds      |                    |
-      ...> |---------------+--------------------|
-      ...> | Zoe Washburne | February 15, 2484  |
-      ...> |---------------+--------------------|
-      ...> """
-      ...> Tabular.to_list_of_lists_no_header(ascii_table)
-      [
-        ["Malcolm Reynolds", "September 20, 2468"],
-        ["Zoe Washburne", "February 15, 2484"]
-      ]
-
-  '''
-  def to_list_of_lists_no_header(ascii_table) do
-    ascii_table
-    |> to_list_of_lists
-    |> Enum.drop(1)
-  end
-
-  @doc ~S'''
-
   Converts an ascii table to a list of lists.
 
   ## Examples
@@ -90,15 +61,22 @@ defmodule Tabular do
         ["Malcolm Reynolds", "September 20, 2468"],
         ["Zoe Washburne", "February 15, 2484"]
       ]
-
+      ...> Tabular.to_list_of_lists(ascii_table, header: false)
+      [
+        ["Malcolm Reynolds", "September 20, 2468"],
+        ["Zoe Washburne", "February 15, 2484"]
+      ]
   '''
-  def to_list_of_lists(ascii_table) do
-    ascii_table
-    |> lines()
-    |> cell_line_groups()
-    |> trimmed_and_grouped_cell_contents()
-    |> folded_cell_contents()
-    |> specials()
+  def to_list_of_lists(ascii_table, opts \\ [header: true]) do
+    rows =
+      ascii_table
+      |> lines()
+      |> cell_line_groups()
+      |> trimmed_and_grouped_cell_contents()
+      |> folded_cell_contents()
+      |> specials()
+
+    if opts[:header], do: rows, else: Enum.drop(rows, 1)
   end
 
   @doc false
