@@ -3,22 +3,48 @@ defmodule Tabular.TestSupportTest do
 
   doctest Tabular
 
-  describe "equal?" do
-    test "when there is a false value in any cell, returns false" do
+  describe "assert_equal" do
+    test "passes when tables are equal" do
+      result_table = [
+        ["name", "dob"],
+        ["Malcolm", "September 20, 2468"],
+        ["Zoe", "February 15, 2484"]
+      ]
+
+      assert Tabular.TestSupport.assert_equal(result_table)
+    end
+
+    test "flunks and prints table highlighting differences when tables are different" do
+      expected_message = ~r|Malcolm <=> Mike|
+
       results_table = [
-        [true, true, true],
-        [true, false, true],
-        [true, true, true]
+        ["name", "dob"],
+        [{"Malcolm", "Mike"}, "September 20, 2468"],
+        ["Zoe", "February 15, 2484"]
+      ]
+
+      assert_raise ExUnit.AssertionError, expected_message, fn ->
+        Tabular.TestSupport.assert_equal(results_table)
+      end
+    end
+  end
+
+  describe "equal?" do
+    test "when there is a non-matching value in any cell, returns false" do
+      results_table = [
+        ["name", "dob"],
+        [{"Malcolm", "Mike"}, "September 20, 2468"],
+        ["Zoe", "February 15, 2484"]
       ]
 
       refute Tabular.TestSupport.equal?(results_table)
     end
 
-    test "when all cells are true, returns true" do
+    test "when all cells match, returns true" do
       results_table = [
-        [true, true, true],
-        [true, true, true],
-        [true, true, true]
+        ["name", "dob"],
+        ["Mike", "September 20, 2468"],
+        ["Zoe", "February 15, 2484"]
       ]
 
       assert Tabular.TestSupport.equal?(results_table)
@@ -48,8 +74,9 @@ defmodule Tabular.TestSupportTest do
       """
 
       results_table = [
-        [false, true],
-        [true, true]
+        ["name", "dob"],
+        [{"Malcolm", "Mike"}, "September 20, 2468"],
+        ["Zoe", "February 15, 2484"]
       ]
 
       assert Tabular.TestSupport.compare(table1, table2) == results_table
@@ -77,8 +104,9 @@ defmodule Tabular.TestSupportTest do
       """
 
       results_table = [
-        [false, true],
-        [true, false]
+        ["name", "count"],
+        [{"Malcolm", "Mike"}, "10"],
+        ["Zoe", {"5", "20"}]
       ]
 
       comparators = %{"count" => &(abs(String.to_integer(&1) - String.to_integer(&2)) < 2)}
