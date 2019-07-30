@@ -5,7 +5,7 @@ defmodule Tabular.MixProject do
     [
       app: :tabular,
       description: description(),
-      version: "0.3.2",
+      version: "1.0.0",
       elixir: "~> 1.8",
       deps: deps(),
       name: "Tabular",
@@ -20,7 +20,8 @@ defmodule Tabular.MixProject do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.19", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
+      {:table_rex, "~> 2.0.0"}
     ]
   end
 
@@ -35,5 +36,9 @@ defmodule Tabular.MixProject do
         "GitHub" => "https://github.com/kellyfelkins/tabular"
       }
     ]
+  end
+
+  def application do
+    [applications: [:table_rex]]
   end
 end

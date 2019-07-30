@@ -50,19 +50,26 @@ defmodule Tabular.TestSupport do
     actual_table_data = actual_table |> Tabular.to_list_of_lists()
     expected_table_data = expected_table |> Tabular.to_list_of_lists()
 
-    [_actual_headers | actual_table_rows] = actual_table_data
+    [actual_headers | actual_table_rows] = actual_table_data
     [expected_header_row | expected_table_rows] = expected_table_data
 
-    Enum.zip(actual_table_rows, expected_table_rows)
-    |> Enum.map(fn {actual_row, expected_row} ->
-      Enum.zip([expected_header_row, actual_row, expected_row])
-      |> Enum.map(fn {header, actual_value, expected_value} ->
-        case opts[:comparators][header] do
-          nil -> actual_value == expected_value
-          comparator -> comparator.(actual_value, expected_value)
-        end
-      end)
-    end)
+    [actual_headers] ++
+      (Enum.zip(actual_table_rows, expected_table_rows)
+       |> Enum.map(fn {actual_row, expected_row} ->
+         Enum.zip([expected_header_row, actual_row, expected_row])
+         |> Enum.map(fn {header, actual_value, expected_value} ->
+           match? =
+             case opts[:comparators][header] do
+               nil -> actual_value == expected_value
+               comparator -> comparator.(actual_value, expected_value)
+             end
+
+           case match? do
+             true -> actual_value
+             false -> {actual_value, expected_value}
+           end
+         end)
+       end))
   end
 
   @doc ~S'''
@@ -84,7 +91,32 @@ defmodule Tabular.TestSupport do
 
   def equal?(compare_result) do
     Enum.all?(compare_result, fn row ->
-      Enum.all?(row, & &1)
+      Enum.all?(row, fn
+        {_, _} -> false
+        _ -> true
+      end)
+    end)
+  end
+
+  def assert_equal(results_table) do
+    if equal?(results_table) do
+      true
+    else
+      generate_error_message(results_table)
+      |> ExUnit.Assertions.flunk()
+    end
+  end
+
+  def generate_error_message([header | body]) do
+    format_cells(body) |> TableRex.quick_render!(header)
+  end
+
+  def format_cells(results_table) do
+    Enum.map(results_table, fn row ->
+      Enum.map(row, fn
+        {left, right} -> ">>> #{left} <=> #{right} <<<"
+        cell -> cell
+      end)
     end)
   end
 end
