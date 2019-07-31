@@ -111,10 +111,8 @@ defmodule TabularTest do
 
       assert actual == expected
     end
-  end
 
-  describe "to_list_of_lists_no_header" do
-    test "returns values as a list of lists without the header" do
+    test "with header: false, returns values as a list of lists without the header" do
       data_as_table = """
             +-----------+--------------------+--------------+
             | name      | dob                | predictable? |
@@ -132,7 +130,7 @@ defmodule TabularTest do
             +-----------+--------------------+--------------+
       """
 
-      actual = Tabular.to_list_of_lists_no_header(data_as_table)
+      actual = Tabular.to_list_of_lists(data_as_table, header: false)
 
       expected = [
         ["Malcolm Reynolds", "September 20, 2468", false],

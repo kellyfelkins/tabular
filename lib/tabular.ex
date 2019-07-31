@@ -39,6 +39,7 @@ defmodule Tabular do
     end)
   end
 
+  @doc deprecated: "Use to_list_of_lists(table, header: false) instead"
   @doc ~S'''
 
   Converts an ascii table to a list of lists, omitting the header row.
@@ -63,9 +64,7 @@ defmodule Tabular do
 
   '''
   def to_list_of_lists_no_header(ascii_table) do
-    ascii_table
-    |> to_list_of_lists
-    |> Enum.drop(1)
+    to_list_of_lists(ascii_table, header: false)
   end
 
   @doc ~S'''
@@ -90,15 +89,22 @@ defmodule Tabular do
         ["Malcolm Reynolds", "September 20, 2468"],
         ["Zoe Washburne", "February 15, 2484"]
       ]
-
+      ...> Tabular.to_list_of_lists(ascii_table, header: false)
+      [
+        ["Malcolm Reynolds", "September 20, 2468"],
+        ["Zoe Washburne", "February 15, 2484"]
+      ]
   '''
-  def to_list_of_lists(ascii_table) do
-    ascii_table
-    |> lines()
-    |> cell_line_groups()
-    |> trimmed_and_grouped_cell_contents()
-    |> folded_cell_contents()
-    |> specials()
+  def to_list_of_lists(ascii_table, opts \\ [header: true]) do
+    rows =
+      ascii_table
+      |> lines()
+      |> cell_line_groups()
+      |> trimmed_and_grouped_cell_contents()
+      |> folded_cell_contents()
+      |> specials()
+
+    if opts[:header], do: rows, else: Enum.drop(rows, 1)
   end
 
   @doc false

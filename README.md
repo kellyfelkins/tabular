@@ -88,7 +88,7 @@ Rows are returned as either lists of lists or lists of maps.
 **Reading a String**
 
 ```elixir
-  Tabular.to_list_of_lists_no_header(table)
+  Tabular.to_list_of_lists(table)
   |> Enum.each(fn [col1, col2, col3] = row ->
     # use row or column data here...
   end
