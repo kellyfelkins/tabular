@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Merges [PR](https://github.com/kellyfelkins/tabular/pull/4) from
   [@achoe314](https://github.com/achoe314) that deprecates 
-  _no_header readers while adding a 
+  `_no_header` readers while adding a 
   header: true/false option to readers.
     
 ## [1.0.0] - 2019-07-30
