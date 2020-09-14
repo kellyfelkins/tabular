@@ -3,26 +3,37 @@ defmodule TabularTest do
 
   doctest Tabular
 
-  describe "lines" do
-    test "splits and trims lines" do
+  describe "has_separators?" do
+    test "true when the table has separators" do
       data_as_table = """
-      line 1
-      line 2
-      line 3
+            +-----------+--------------------+--------------+
+            | name      | dob                | predictable? |
+            +-----------+--------------------+--------------+
+            | Malcolm   | September 20, 2468 | false        |
+            +-----------+--------------------+--------------+
+            | Zoe       | February 15, 2484  |              |
+            +-----------+--------------------+--------------+
       """
 
-      expected = [
-        "line 1",
-        "line 2",
-        "line 3"
-      ]
+      assert Tabular.has_separators?(data_as_table)
+    end
 
-      assert Tabular.lines(data_as_table) == expected
+    test "false when the table does not have separators" do
+      data_as_table = """
+      +-----------+--------------------+--------------+
+      | name      | dob                | predictable? |
+      +-----------+--------------------+--------------+
+      | Malcolm   | September 20, 2468 | false        |
+      | Zoe       | February 15, 2484  |              |
+      +-----------+--------------------+--------------+
+      """
+
+      refute Tabular.has_separators?(data_as_table)
     end
   end
 
   describe "cell_line_groups" do
-    test "extracts lines with cell contents and groups them" do
+    test "when separator lines, extracts lines with cell contents and groups them" do
       data_as_lines = [
         "+-----------+--------------------+",
         "| name      | dob                |",
@@ -40,25 +51,26 @@ defmodule TabularTest do
         ["| Jane      |                    |"]
       ]
 
-      assert Tabular.cell_line_groups(data_as_lines) == expected
+      assert Tabular.cell_line_groups(data_as_lines, has_separators?: true) == expected
     end
-  end
 
-  describe "trimmed_and_grouped_cell_contents" do
-    test "returns cleaned strings" do
-      data_as_line_groups = [
-        ["| name      | dob                |"],
-        ["| Malcolm   | September 20, 2468 |", "| Reynolds  |                    |"],
-        ["| Jane      |                    |"]
+    test "without separator lines, extracts lines with cell contents and groups them" do
+      data_as_lines = [
+        "+-----------+--------------------+",
+        "| name      | dob                |",
+        "+-----------+--------------------+",
+        "| Malcolm   | September 20, 2468 |",
+        "| Jane      |                    |",
+        "+-----------+--------------------+"
       ]
 
       expected = [
-        [["name", "dob"]],
-        [["Malcolm", "September 20, 2468"], ["Reynolds", ""]],
-        [["Jane", ""]]
+        ["| name      | dob                |"],
+        ["| Malcolm   | September 20, 2468 |"],
+        ["| Jane      |                    |"]
       ]
 
-      assert Tabular.trimmed_and_grouped_cell_contents(data_as_line_groups) == expected
+      assert Tabular.cell_line_groups(data_as_lines, has_separators?: false) == expected
     end
   end
 
@@ -77,6 +89,24 @@ defmodule TabularTest do
       ]
 
       assert Tabular.folded_cell_contents(data) == expected
+    end
+  end
+
+  describe "lines" do
+    test "splits and trims lines" do
+      data_as_table = """
+      line 1
+      line 2
+      line 3
+      """
+
+      expected = [
+        "line 1",
+        "line 2",
+        "line 3"
+      ]
+
+      assert Tabular.lines(data_as_table) == expected
     end
   end
 
@@ -107,6 +137,31 @@ defmodule TabularTest do
         ["Zoe Washburne", "February 15, 2484", ""],
         ["Jane", :unknown, true],
         ["Derrial Book", nil, true]
+      ]
+
+      assert actual == expected
+    end
+
+    test "returns values as a list of lists from tables without separator lines" do
+      data_as_table = """
+            +-----------+--------------------+--------------+
+            | name      | dob                | predictable? |
+            +-----------+--------------------+--------------+
+            | Malcolm   | September 20, 2468 | false        |
+            | Zoe       | February 15, 2484  |              |
+            | Jane      | :unknown           | true         |
+            | Derrial   | nil                | true         |
+            +-----------+--------------------+--------------+
+      """
+
+      actual = Tabular.to_list_of_lists(data_as_table)
+
+      expected = [
+        ["name", "dob", "predictable?"],
+        ["Malcolm", "September 20, 2468", false],
+        ["Zoe", "February 15, 2484", ""],
+        ["Jane", :unknown, true],
+        ["Derrial", nil, true]
       ]
 
       assert actual == expected
@@ -172,6 +227,24 @@ defmodule TabularTest do
       ]
 
       assert actual == expected
+    end
+  end
+
+  describe "trimmed_and_grouped_cell_contents" do
+    test "returns cleaned strings" do
+      data_as_line_groups = [
+        ["| name      | dob                |"],
+        ["| Malcolm   | September 20, 2468 |", "| Reynolds  |                    |"],
+        ["| Jane      |                    |"]
+      ]
+
+      expected = [
+        [["name", "dob"]],
+        [["Malcolm", "September 20, 2468"], ["Reynolds", ""]],
+        [["Jane", ""]]
+      ]
+
+      assert Tabular.trimmed_and_grouped_cell_contents(data_as_line_groups) == expected
     end
   end
 end

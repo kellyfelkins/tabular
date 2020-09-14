@@ -25,4 +25,6 @@ tabular-*.tar
 *.iml
 .idea
 .tool-versions
+.DS_Store
+
 

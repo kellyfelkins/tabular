@@ -14,10 +14,26 @@ The reader allows you to read string data formatted like this:
 | name             | dob                |
 +------------------+--------------------+
 | Malcolm Reynolds | September 20, 2468 |
-+------------------+--------------------+
 | Zoe Washburne    | February 15, 2484  |
 +------------------+--------------------+
 </pre>
+
+You can add row separators so that column values can wrap over multiple rows. This
+helps you manage the width of tables. 
+
+<pre>
++-----------+--------------+
+| name      | dob          |
++-----------+--------------+
+| Malcolm   | September 20,|
+| Reynolds  | 2468         |
++-----------+--------------+
+| Zoe       | February 15, |
+| Washburne | 2484         |
++-----------+--------------+
+</pre>        
+        
+Wrapped cells are folded--the two tables produce the same results.
 
 Test Helpers
 ------------

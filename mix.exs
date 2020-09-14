@@ -5,7 +5,7 @@ defmodule Tabular.MixProject do
     [
       app: :tabular,
       description: description(),
-      version: "1.1.0",
+      version: "1.2.0",
       elixir: "~> 1.8",
       deps: deps(),
       name: "Tabular",

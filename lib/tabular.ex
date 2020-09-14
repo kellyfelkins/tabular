@@ -27,6 +27,22 @@ defmodule Tabular do
         %{dob: "February 15, 2484", name: "Zoe Washburne"}
       ]
 
+      Without separators:
+
+      iex> ascii_table = """
+      ...> |------------------+--------------------|
+      ...> | name             | dob                |
+      ...> |------------------+--------------------|
+      ...> | Malcolm Reynolds | September 20, 2468 |
+      ...> | Zoe Washburne    | February 15, 2484  |
+      ...> |------------------+--------------------|
+      ...> """
+      ...> Tabular.to_list_of_maps(ascii_table)
+      [
+        %{dob: "September 20, 2468", name: "Malcolm Reynolds"},
+        %{dob: "February 15, 2484", name: "Zoe Washburne"}
+      ]
+
   '''
   def to_list_of_maps(ascii_table) do
     [headers | rows] = to_list_of_lists(ascii_table)
@@ -55,6 +71,22 @@ defmodule Tabular do
       ...> |---------------+--------------------|
       ...> | Zoe Washburne | February 15, 2484  |
       ...> |---------------+--------------------|
+      ...> """
+      ...> Tabular.to_list_of_lists_no_header(ascii_table)
+      [
+        ["Malcolm Reynolds", "September 20, 2468"],
+        ["Zoe Washburne", "February 15, 2484"]
+      ]
+
+      Without separators:
+
+      iex> ascii_table = """
+      ...> |------------------+--------------------|
+      ...> | name             | dob                |
+      ...> |------------------+--------------------|
+      ...> | Malcolm Reynolds | September 20, 2468 |
+      ...> | Zoe Washburne    | February 15, 2484  |
+      ...> |------------------+--------------------|
       ...> """
       ...> Tabular.to_list_of_lists_no_header(ascii_table)
       [
@@ -94,12 +126,34 @@ defmodule Tabular do
         ["Malcolm Reynolds", "September 20, 2468"],
         ["Zoe Washburne", "February 15, 2484"]
       ]
+
+      Without separators:
+
+      iex> ascii_table = """
+      ...> |------------------+--------------------|
+      ...> | name             | dob                |
+      ...> |------------------+--------------------|
+      ...> | Malcolm Reynolds | September 20, 2468 |
+      ...> | Zoe Washburne    | February 15, 2484  |
+      ...> |------------------+--------------------|
+      ...> """
+      ...> Tabular.to_list_of_lists(ascii_table)
+      [
+        ["name", "dob"],
+        ["Malcolm Reynolds", "September 20, 2468"],
+        ["Zoe Washburne", "February 15, 2484"]
+      ]
+      ...> Tabular.to_list_of_lists(ascii_table, header: false)
+      [
+        ["Malcolm Reynolds", "September 20, 2468"],
+        ["Zoe Washburne", "February 15, 2484"]
+      ]
   '''
   def to_list_of_lists(ascii_table, opts \\ [header: true]) do
     rows =
       ascii_table
       |> lines()
-      |> cell_line_groups()
+      |> cell_line_groups(has_separators?: has_separators?(ascii_table))
       |> trimmed_and_grouped_cell_contents()
       |> folded_cell_contents()
       |> specials()
@@ -115,7 +169,7 @@ defmodule Tabular do
   end
 
   @doc false
-  def cell_line_groups(lines) do
+  def cell_line_groups(lines, has_separators?: true) do
     lines
     |> Enum.chunk_by(fn line ->
       Regex.match?(@row_splitter_re, line)
@@ -124,6 +178,13 @@ defmodule Tabular do
       !(length(group) == 1 &&
           Regex.match?(@row_splitter_re, hd(group)))
     end)
+  end
+
+  @doc false
+  def cell_line_groups(lines, has_separators?: false) do
+    lines
+    |> Enum.reject(&(&1 =~ @row_splitter_re))
+    |> Enum.map(&[&1])
   end
 
   @doc false
@@ -186,4 +247,12 @@ defmodule Tabular do
   def special(""), do: ""
   def special(":" <> rest), do: String.to_atom(rest)
   def special(not_special), do: not_special
+
+  @doc false
+  def has_separators?(ascii_table) do
+    [_, _, _ | lines] = lines(ascii_table)
+    {_, lines} = List.pop_at(lines, -1)
+
+    Enum.any?(lines, &(&1 =~ @row_splitter_re))
+  end
 end
