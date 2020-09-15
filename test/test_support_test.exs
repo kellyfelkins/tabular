@@ -1,7 +1,7 @@
 defmodule Tabular.TestSupportTest do
   use ExUnit.Case, async: true
 
-  doctest Tabular
+  doctest Tabular.TestSupport
 
   describe "assert_equal" do
     test "passes when tables are equal" do
