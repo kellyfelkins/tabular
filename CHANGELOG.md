@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2020-09-14
+
+### Added
+
+- Adds processing of tables that do not have separator lines.
+
 ## [1.1.0] - 2019-07-31
 
 ### Added
@@ -35,3 +41,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and tuples in the case where cell contents do not match.
   `TestSupport.equal?()` accepts this new format. Thank you 
   [@aarongraham](https://github.com/aarongraham).
+
