@@ -13,7 +13,7 @@ defmodule Tabular.MixProject do
       package: package(),
       docs: [
         main: "Tabular",
-        extras: ["README.md"]
+        extras: ["README.md", "CHANGELOG.md"]
       ]
     ]
   end
